@@ -2,13 +2,13 @@ import random
 from config import Config
 
 class State:
-    def __init__(self, syntax):
+    def __init__(self, config=Config()):
         self.current_indiv_index = None
         self.variables = []
         # it holds values of variables
         self.values = []
         self.stack = []
-        self.syntax = syntax
+        self.config = config
         
     def init_new_indiv_state(self):
         if self.current_indiv_index == None:
@@ -44,37 +44,37 @@ class State:
         return var
     
     def get_while_loop(self):
-        while_syntax = self.syntax['while']
+        while_syntax = self.config.syntax['while']
         self._save_while_loop(while_syntax)
         return while_syntax
     
     def get_if_statement(self):
-        if_syntax = self.syntax['if']
+        if_syntax = self.config.syntax['if']
         self._save_if_statement(if_syntax)
         return if_syntax   
      
     def get_random_condition(self):
-        condition = random.choice(self.syntax['conditions'])
+        condition = random.choice(self.config.syntax['conditions'])
         self._save_condition(condition)
         return condition
     
     def get_random_operation(self):
-        operation = random.choice(self.syntax['operations'])
+        operation = random.choice(self.config.syntax['operations'])
         self._save_operation(operation)
         return operation
     
     def get_open_scope(self):
-        open_scope_syntax = self.syntax['open_scope']
+        open_scope_syntax = self.config.syntax['open_scope']
         self._save_open_scope(open_scope_syntax)
         return open_scope_syntax
     
     def get_close_scope(self):
-        close_scope_syntax = self.syntax['close_scope']
+        close_scope_syntax = self.config.syntax['close_scope']
         self._save_close_scope(close_scope_syntax)
         return close_scope_syntax
 
     def get_var_prefix(self):
-        var_prefix = self.syntax['variable_prefix']
+        var_prefix = self.config.syntax['variable_prefix']
         return var_prefix
 
     def _get_current_stack(self):

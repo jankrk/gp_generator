@@ -14,10 +14,16 @@ class Config:
 
         self.max_statements_depth = 2
         self.max_expressions_depth = 2
+        self.max_mutation_depth = 2
 
         self.population = 5
 
         self.tournament_size = 10
+
+        self.evolution_prob = {
+            'crossover': 20,
+            'mutation': 100
+        }
         
         self.prob = {
             'variable': 30,
