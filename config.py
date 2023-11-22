@@ -24,6 +24,12 @@ class Config:
         # 1 means max complexity
         self.complexity_of_expressions = 0.7
 
-
-        self.operations = ['+', '-', '*', '/']
-        self.conditions = ['<', '>', '==', '!=']
+        self.syntax = {
+            'if': 'if',
+            'while': 'while',
+            'open_scope': '{',
+            'close_scope': '}',
+            'operations': ['+', '-', '*', '/'],
+            'conditions': ['<', '>', '==', '!='],
+            'variable_prefix': 'var',
+        }

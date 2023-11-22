@@ -3,20 +3,16 @@ from config import Config
 from state import State
 
 class TinyGPGenerator:
-    def __init__(self, config=Config(), state=State()):
+    def __init__(self, config=Config()):
         self.config = config
-        self.state = state
+        self.state = State(self.config.syntax)
 
     def _generate_expression(self, depth=0):
         if depth > self.config.max_expressions_depth or random.random() < (1 - self.config.complexity_of_expressions):
-            # Choose random variable
-            variable = self.state.choose_random_variable()
-            self.state.save_variable(variable)
-            return variable
+            return self.state.get_random_variable()
         else:
             # Choose an arithmetic expression
-            operation = random.choice(self.config.operations)
-            self.state.save_operation(operation)
+            operation = self.state.get_random_operation()
 
             left = self._generate_expression(depth + 1)
             right = self._generate_expression(depth + 1)
@@ -24,8 +20,7 @@ class TinyGPGenerator:
 
     def _generate_condition(self):
         # Generate and save a condition
-        condition = random.choice(self.config.conditions)
-        self.state.save_condition(condition)
+        condition = self.state.get_random_condition()
 
         left = self._generate_expression()
         right = self._generate_expression()
@@ -42,7 +37,6 @@ class TinyGPGenerator:
             prob = value - prev
             prev = value
             print(f'{key}: {prob}')
-
 
 
     def _generate_statement(self, depth=0):
@@ -64,29 +58,29 @@ class TinyGPGenerator:
             
             # Generate while loop
             elif random_number < self.config.prob['while_loop']:
-                self.state.save_while_loop()
+                while_loop_syntax = self.state.get_while_loop()
                 condition = self._generate_condition()
-                self.state.save_open_expression()
-                content += f'while ({condition}) {{\n'
+                open_scope_syntax = self.state.get_open_scope()
+                content += f'{while_loop_syntax} ({condition}) {open_scope_syntax}\n'
                 content += self._generate_statement(depth + 1)
-                content += '}\n'
-                self.state.save_close_expression()
+                close_scope_syntax = self.state.get_close_scope()
+                content += f'{close_scope_syntax}\n'
 
+            # Generate operation
             elif random_number < self.config.prob['operation']:
-                variable = self.state.choose_random_variable()
-                self.state.save_variable(variable)
+                variable = self.state.get_random_variable()
                 expression = self._generate_expression()
                 content += f'{variable} = {expression};\n'
             
             # Generate if statement
             elif random_number < self.config.prob['if_statement']:
-                self.state.save_if_statement()
+                if_statement_syntax = self.state.get_if_statement()
                 condition = self._generate_condition()
-                self.state.save_open_expression()
-                content += f'if ({condition}) {{\n'
+                open_scope_syntax = self.state.get_open_scope()
+                content += f'{if_statement_syntax} ({condition}) {open_scope_syntax}\n'
                 content += self._generate_statement(depth + 1)
-                content += '}\n'
-                self.state.save_close_expression()
+                close_scope_syntax = self.state.get_close_scope()
+                content += f'{close_scope_syntax}\n'
         
         return content
 
@@ -106,7 +100,7 @@ class TinyGPGenerator:
     def run(self):
         self._print_config_probabilities()
         program = self._generate_program()
-        print("program: ", self.state.program)
+        print("stack: ", self.state.stack)
         return program
         
 
