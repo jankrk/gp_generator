@@ -9,7 +9,12 @@ class TinyGPGenerator:
 
     def _generate_expression(self, depth=0):
         if depth > self.config.max_expressions_depth or random.random() < (1 - self.config.complexity_of_expressions):
-            return self.state.get_random_variable()
+            random_num = random.randint(1, 100)
+            
+            if random_num < self.config.expression_prob['variable']:
+                return self.state.get_random_variable()
+            else:
+                return self.state.get_random_const(self.config.min_const_val, self.config.max_const_val)
         else:
             # Choose an arithmetic expression
             operation = self.state.get_random_operation()
@@ -120,6 +125,3 @@ class TinyGPGenerator:
 if __name__ == "__main__":
     generator = TinyGPGenerator()
     population = generator.run()
-    # print("\n")
-    # print("GENERATED PROGRAM: \n")
-    # print(generated_program)

@@ -6,6 +6,9 @@ class Config:
         self.min_var_initial_value = 0
         self.max_var_initial_value = 10
 
+        self.min_const_val = 1
+        self.max_const_val = 30
+
         self.min_number_of_statements = 1
         self.max_number_of_statements = 5
 
@@ -13,12 +16,19 @@ class Config:
         self.max_expressions_depth = 2
 
         self.population = 5
+
+        self.tournament_size = 10
         
         self.prob = {
             'variable': 30,
             'while_loop': 50,
             'operation': 90,
             'if_statement': 100
+        }
+
+        self.expression_prob = {
+            'variable': 50,
+            'const': 100,
         }
 
         # between 0 and 1

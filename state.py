@@ -24,13 +24,16 @@ class State:
         
         var_prefix = self.get_var_prefix()
         variable = f'{var_prefix}{len(self.variables[self.current_indiv_index])}'
-        init_value = random.randint(min_value, max_value)
+        self._save_variable(variable)
+        init_value = self.get_random_const(min_value, max_value)
         self.variables[self.current_indiv_index].append(variable)
         self.values[self.current_indiv_index][variable] = init_value
-        self._save_variable(variable)
-        self._save_value(init_value)
         return (variable, init_value)
     
+    def get_random_const(self, min_value, max_value):
+        val = random.randint(min_value, max_value)
+        self._save_value(val)
+        return val
 
     def get_var_value(self, var):
         return self.values[self.current_indiv_index][var]
