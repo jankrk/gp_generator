@@ -8,23 +8,27 @@ class TinyGPGenerator:
         self.state = state
 
     def _generate_expression(self, depth=0):
-        return self.state.choose_random_variable()
-
-        if depth < 2 and random.random() < 0.5:
+        if depth > self.config.max_expressions_depth or random.random() < (1 - self.config.complexity_of_expressions):
             # Choose random variable
-            return self.choose_variable()
+            variable = self.state.choose_random_variable()
+            self.state.save_variable(variable)
+            return variable
         else:
-            # Generate an arithmetic expression
-            left = self.generate_expression(depth + 1)
-            operation = random.choice(self.operations)
-            right = self.generate_expression(depth + 1)
+            # Choose an arithmetic expression
+            operation = random.choice(self.config.operations)
+            self.state.save_operation(operation)
+
+            left = self._generate_expression(depth + 1)
+            right = self._generate_expression(depth + 1)
             return f'({left} {operation} {right})'
 
     def _generate_condition(self):
-        left = self._generate_expression()
+        # Generate and save a condition
         condition = random.choice(self.config.conditions)
+        self.state.save_condition(condition)
+
+        left = self._generate_expression()
         right = self._generate_expression()
-        self.state.save_expression(condition, left, right)
         return f'{left} {condition} {right}'
     
     # Create random number of variables with random values from the range
@@ -41,10 +45,10 @@ class TinyGPGenerator:
 
 
 
-    def _generate_content(self, depth=0):
+    def _generate_statement(self, depth=0):
         content = ''
         
-        if depth > self.config.max_depth:
+        if depth > self.config.max_statements_depth:
             return content
         
         number_of_statements = random.randint(self.config.min_number_of_statements, self.config.max_number_of_statements)
@@ -64,12 +68,15 @@ class TinyGPGenerator:
                 condition = self._generate_condition()
                 self.state.save_open_expression()
                 content += f'while ({condition}) {{\n'
-                content += self._generate_content(depth + 1)
+                content += self._generate_statement(depth + 1)
                 content += '}\n'
                 self.state.save_close_expression()
 
             elif random_number < self.config.prob['operation']:
-                content += ''
+                variable = self.state.choose_random_variable()
+                self.state.save_variable(variable)
+                expression = self._generate_expression()
+                content += f'{variable} = {expression};\n'
             
             # Generate if statement
             elif random_number < self.config.prob['if_statement']:
@@ -77,7 +84,7 @@ class TinyGPGenerator:
                 condition = self._generate_condition()
                 self.state.save_open_expression()
                 content += f'if ({condition}) {{\n'
-                content += self._generate_content(depth + 1)
+                content += self._generate_statement(depth + 1)
                 content += '}\n'
                 self.state.save_close_expression()
         
@@ -91,7 +98,7 @@ class TinyGPGenerator:
             program += f'int {var} = {self.state.values[var]};\n'
         
         
-        content = self._generate_content()
+        content = self._generate_statement()
         program += content
 
         return program

@@ -9,7 +9,8 @@ class Config:
         self.min_number_of_statements = 1
         self.max_number_of_statements = 5
 
-        self.max_depth = 2
+        self.max_statements_depth = 2
+        self.max_expressions_depth = 2
         
         self.prob = {
             'variable': 30,
@@ -17,6 +18,11 @@ class Config:
             'operation': 90,
             'if_statement': 100
         }
+
+        # between 0 and 1
+        # 0 means no complexity
+        # 1 means max complexity
+        self.complexity_of_expressions = 0.7
 
 
         self.operations = ['+', '-', '*', '/']

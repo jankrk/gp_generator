@@ -36,7 +36,16 @@ class State:
     def save_close_expression(self):
         self.program.append('}')
 
-    def save_expression(self, condition, left, right):
+    def save_condition(self, condition):
         self.program.append(condition)
-        self.program.append(left)
-        self.program.append(right)
+
+    def save_variable(self, variable):
+        self.program.append(variable)
+    
+    def save_operation(self, operation):
+        self.program.append(operation)
+
+    # def save_expression(self, condition, left, right):
+    #     self.program.append(condition)
+    #     self.program.append(left)
+    #     self.program.append(right)
