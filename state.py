@@ -3,28 +3,40 @@ from config import Config
 
 class State:
     def __init__(self, syntax):
+        self.current_indiv_index = None
         self.variables = []
         # it holds values of variables
-        self.values = {}
+        self.values = []
         self.stack = []
         self.syntax = syntax
         
+    def init_new_indiv_state(self):
+        if self.current_indiv_index == None:
+            self.current_indiv_index = 0
+        else:
+            self.current_indiv_index += 1
+        
+        self.variables.append([])
+        self.values.append({})
+        self.stack.append([])
     
     def create_variable_with_initial_value(self, min_value, max_value):
-        variable = f'var{len(self.variables)}'
+        
+        var_prefix = self.get_var_prefix()
+        variable = f'{var_prefix}{len(self.variables[self.current_indiv_index])}'
         init_value = random.randint(min_value, max_value)
-        self.variables.append(variable)
-        self.values[variable] = init_value
+        self.variables[self.current_indiv_index].append(variable)
+        self.values[self.current_indiv_index][variable] = init_value
         self._save_variable(variable)
         self._save_value(init_value)
         return (variable, init_value)
     
 
     def get_var_value(self, var):
-        return self.values[var]
+        return self.values[self.current_indiv_index][var]
     
     def get_random_variable(self):
-        var = random.choice(self.variables)
+        var = random.choice(self.variables[self.current_indiv_index])
         self._save_variable(var)
         return var
     
@@ -58,27 +70,41 @@ class State:
         self._save_close_scope(close_scope_syntax)
         return close_scope_syntax
 
+    def get_var_prefix(self):
+        var_prefix = self.syntax['variable_prefix']
+        return var_prefix
+
+    def _get_current_stack(self):
+        return self.stack[self.current_indiv_index]
 
     def _save_if_statement(self, if_syntax):
-        self.stack.append(if_syntax)
+        stack = self._get_current_stack()
+        stack.append(if_syntax)
 
     def _save_while_loop(self, while_syntax):
-        self.stack.append(while_syntax)
+        stack = self._get_current_stack()
+        stack.append(while_syntax)
 
     def _save_open_scope(self, open_scope_syntax):
-        self.stack.append(open_scope_syntax)
+        stack = self._get_current_stack()
+        stack.append(open_scope_syntax)
 
     def _save_close_scope(self, close_scope_syntax):
-        self.stack.append(close_scope_syntax)
+        stack = self._get_current_stack()
+        stack.append(close_scope_syntax)
 
     def _save_condition(self, condition):
-        self.stack.append(condition)
+        stack = self._get_current_stack()
+        stack.append(condition)
 
     def _save_variable(self, variable):
-        self.stack.append(variable)
+        stack = self._get_current_stack()
+        stack.append(variable)
 
     def _save_value(self, value):
-        self.stack.append(value)
+        stack = self._get_current_stack()
+        stack.append(value)
     
     def _save_operation(self, operation):
-        self.stack.append(operation)
+        stack = self._get_current_stack()
+        stack.append(operation)

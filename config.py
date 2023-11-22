@@ -11,6 +11,8 @@ class Config:
 
         self.max_statements_depth = 2
         self.max_expressions_depth = 2
+
+        self.population = 5
         
         self.prob = {
             'variable': 30,

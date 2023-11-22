@@ -85,28 +85,41 @@ class TinyGPGenerator:
         return content
 
     def _generate_program(self):
-        self._generate_initial_variables()
-        program = ''
-        
-        for var in self.state.variables:
-            program += f'int {var} = {self.state.values[var]};\n'
-        
-        
-        content = self._generate_statement()
-        program += content
+        population = []
+        # Generate population of programs
+        for _ in range(self.config.population):
+            self.state.init_new_indiv_state()
+            self._generate_initial_variables()
+            program = ''
+            
+            for var in self.state.variables[self.state.current_indiv_index]:
+                program += f'int {var} = {self.state.values[self.state.current_indiv_index][var]};\n'
+            
+            
+            content = self._generate_statement()
+            program += content
 
-        return program
+            population.append(program)
+        return population
     
     def run(self):
         self._print_config_probabilities()
-        program = self._generate_program()
-        print("stack: ", self.state.stack)
-        return program
+        population = self._generate_program()
+
+        for i, indiv in enumerate(population):
+            print("\n")
+            print("INDIVIDUAL: ", i)
+            print("\n")
+            print(indiv)
+            print("\n")
+            print("STACK: ", self.state.stack[i])
+
+        return population
         
 
 if __name__ == "__main__":
     generator = TinyGPGenerator()
-    generated_program = generator.run()
-    print("\n")
-    print("GENERATED PROGRAM: \n")
-    print(generated_program)
+    population = generator.run()
+    # print("\n")
+    # print("GENERATED PROGRAM: \n")
+    # print(generated_program)
