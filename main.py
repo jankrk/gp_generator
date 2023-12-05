@@ -1,7 +1,8 @@
 import random
 from config import Config
 from state import State
-from tree_factory import TreeFactory
+from treeFactory import TreeFactory
+from evolution import Evolution
 
 class TinyGPGenerator:
     def __init__(self, config=Config(), state=State(), tree_factory=TreeFactory):
@@ -21,13 +22,15 @@ class TinyGPGenerator:
         population = self.tree_factory.generate_population()
 
         for i, indiv in enumerate(population):
-            print("\n")
-            print("INDIVIDUAL: ", i)
-            print("\n")
-            print(indiv)
-            print("\n")
+            # print("\n")
+            # print("INDIVIDUAL: ", i)
+            # print("\n")
+            # print(indiv)
+            # print("\n")
             print("STACK: ", self.state.stack[i])
 
+        evolution = Evolution(self.state)
+        evolution.evolve()
         return population
         
 

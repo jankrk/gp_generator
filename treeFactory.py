@@ -13,7 +13,7 @@ class TreeFactory:
             if random_num < self.config.expression_prob['variable']:
                 return self.state.get_random_variable()
             else:
-                return self.state.get_random_const(self.config.min_const_val, self.config.max_const_val)
+                return self.state.get_random_const()
         else:
             # Choose an arithmetic expression
             operation = self.state.get_random_operation()
@@ -33,7 +33,7 @@ class TreeFactory:
     # Create random number of variables with random values from the range
     def _generate_initial_variables(self):
         for _ in range(random.randint(self.config.min_inital_vars, self.config.max_initial_vars)):
-            self.state.create_variable_with_initial_value(self.config.min_var_initial_value, self.config.max_var_initial_value)
+            self.state.create_variable_with_initial_value()
 
 
     def _generate_statement(self, depth=0):
@@ -50,7 +50,7 @@ class TreeFactory:
 
             # Generate variable declaration
             if random_number < self.config.prob['variable']:
-                variable, init_value = self.state.create_variable_with_initial_value(self.config.min_var_initial_value, self.config.max_var_initial_value)
+                variable, init_value = self.state.create_variable_with_initial_value()
                 content += f'int {variable} = {init_value};\n'
             
             # Generate while loop

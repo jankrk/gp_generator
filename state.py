@@ -20,18 +20,22 @@ class State:
         self.values.append({})
         self.stack.append([])
     
-    def create_variable_with_initial_value(self, min_value, max_value):
+    def create_variable_with_initial_value(self):
         
         var_prefix = self.get_var_prefix()
         variable = f'{var_prefix}{len(self.variables[self.current_indiv_index])}'
         self._save_variable(variable)
-        init_value = self.get_random_const(min_value, max_value)
+        init_value = self.get_random_const()
         self.variables[self.current_indiv_index].append(variable)
         self.values[self.current_indiv_index][variable] = init_value
         return (variable, init_value)
     
-    def get_random_const(self, min_value, max_value):
-        val = random.randint(min_value, max_value)
+    def generate_random_const(self):
+        val = random.randint(self.config.min_const_val, self.config.max_const_val)
+        return val
+
+    def get_random_const(self):
+        val = self.generate_random_const()
         self._save_value(val)
         return val
 

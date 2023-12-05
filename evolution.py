@@ -30,28 +30,41 @@ class Evolution:
             # Replace operation
             random_operation = random.choice(self.config.syntax['operations'])
             self.state.stack[indiv_index][random_index] = random_operation
+            print(f"Mutated operation to from {random_element} to {random_operation} at index {random_index}")
             return
 
         if random_element in self.config.syntax['conditions']:
             # Replace condition
             random_condition = random.choice(self.config.syntax['conditions'])
             self.state.stack[indiv_index][random_index] = random_condition
+            print(f"Mutated condition to from {random_element} to {random_condition} at index {random_index}")
             return
         
         if random_element == self.config.syntax['if']:
             # Replace if statement to while loop
             self.state.stack[indiv_index][random_index] = self.config.syntax['while']
+            print(f"Mutated if statement to while loop at index {random_index}")
             return
         
         if random_element == self.config.syntax['while']:
             # Replace while loop to if statement
             self.state.stack[indiv_index][random_index] = self.config.syntax['if']
+            print(f"Mutated while loop to if statement at index {random_index}")
+            return
+
+        if isinstance(random_element, (int, float, complex)):
+            # Replace constant
+            random_const = self.state.generate_random_const()
+            self.state.stack[indiv_index][random_index] = random_const
+            print(f"Mutated constant from {random_element} to {random_const} at index {random_index}")
             return
 
         if random_element.startswith(self.config.syntax['variable_prefix']):
             # Replace variable
-            # random_variable = self.state.get_random_variable()
-            # self.state.stack[indiv_index][random_index] = random_variable
+            random_var_index = random.randint(0, len(self.state.variables[indiv_index]) - 1)
+            random_variable = self.state.variables[indiv_index][random_var_index]
+            self.state.stack[indiv_index][random_index] = random_variable
+            print(f"Mutated variable from {random_element} to {random_variable} at index {random_index}")
             return
 
 
@@ -60,7 +73,6 @@ class Evolution:
         best_indiv_index = None
 
         for _ in range(self.config.tournament_size):
-            # Check random individuals
             random_indiv_index = random.randint(0, self.config.population - 1)
             fitness = self._get_fintess(random_indiv_index)
             if fitness < best:
@@ -70,15 +82,22 @@ class Evolution:
         return best_indiv_index
 
     def evolve(self):
+        for g in range(self.config.generations):
+            print(f"Generation {g}")
+            for i in range(self.config.population):
+                random_number = random.randint(1, 100)
 
-        for i in range(self.config.population):
-            random_number = random.randint(1, 100)
-
-            if random_number < self.config.evolution_prob['crossover']:
-                # Crossover
-                pass
-            elif random_number < self.config.evolution_prob['mutation']:
-                # Mutation
-                indiv_index = self._tournament()
-                pass
+                if random_number < self.config.evolution_prob['crossover']:
+                    # Crossover
+                    print(f"Individual {i} will be crossed over")
+                    pass
+                elif random_number < self.config.evolution_prob['mutation']:
+                    # Mutation
+                    indiv_index = self._tournament()
+                    print(f"Individual {i} will be mutated")
+                    print("Before mutation: ")
+                    print(self.state.stack[indiv_index])
+                    self._mutation(indiv_index)
+                    print("After mutation: ")
+                    print(self.state.stack[indiv_index])
             

@@ -3,9 +3,6 @@ class Config:
         self.min_inital_vars = 1
         self.max_initial_vars = 5
 
-        self.min_var_initial_value = 0
-        self.max_var_initial_value = 10
-
         self.min_const_val = 1
         self.max_const_val = 30
 
@@ -14,11 +11,11 @@ class Config:
 
         self.max_statements_depth = 2
         self.max_expressions_depth = 2
-        self.max_mutation_depth = 2
+        self.max_mutation_depth = 5
 
         self.population = 5
-
-        self.tournament_size = 10
+        self.generations = 5
+        self.tournament_size = 1
 
         self.evolution_prob = {
             'crossover': 20,
