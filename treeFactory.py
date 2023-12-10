@@ -6,97 +6,122 @@ class TreeFactory:
         self.config = config
         self.state = state
 
-    def _generate_expression(self, depth=0):
-        if depth > self.config.max_expressions_depth or random.random() < (1 - self.config.complexity_of_expressions):
-            random_num = random.randint(1, 100)
-            
-            if random_num < self.config.expression_prob['variable']:
-                return self.state.get_random_variable()
-            else:
-                return self.state.get_random_const()
-        else:
-            # Choose an arithmetic expression
-            operation = self.state.get_random_operation()
 
-            left = self._generate_expression(depth + 1)
-            right = self._generate_expression(depth + 1)
-            return f'({left} {operation} {right})'
+    def _generate_operation(self, depth=1):
+        if depth > self.config.max_operations_depth or random.random() < (1 - self.config.complexity_of_operations):
+            
+            operation_leaf = self.state.get_random_operation_leaf()
+            if operation_leaf == 'variable':
+                self.state.get_random_variable()
+            elif operation_leaf == 'constant':
+                self.state.get_random_const()
+        else: 
+            # Choose an arithmetic expression
+            self.state.get_random_operation()
+            self._generate_operation(depth + 1)
+            self._generate_operation(depth + 1)
 
     def _generate_condition(self):
-        # Generate and save a condition
-        condition = self.state.get_random_condition()
-
-        left = self._generate_expression()
-        right = self._generate_expression()
-        return f'{left} {condition} {right}'
+        self.state.get_random_condition()
+        self._generate_operation()
+        self._generate_operation()
     
-    # Create random number of variables with random values from the range
+    def _generate_logic(self, depth=1):
+        if depth > self.config.max_logic_depth or random.random() < (1 - self.config.complexity_of_logic):
+            self._generate_condition()
+        else:
+            self.state.get_random_logic()
+            self._generate_logic(depth + 1)
+            self._generate_logic(depth + 1)
+    
+    def _generate_equation(self):
+        self.state.get_equation()
+        equation_type = self.state.get_random_equation_type()
+        
+        if equation_type == 'input':
+            self.state.create_new_variable()
+            self.state.get_input()
+            return
+        
+        random_number = random.randint(1, 100)
+        # Left side of the equation
+        if random_number < 50:
+            # Create new variable
+            self.state.create_new_variable()
+        else:
+            # Choose existing variable
+            self.state.get_random_variable()
+
+        # Right side of the equation
+        if equation_type == 'operation':
+            self._generate_operation()
+        elif equation_type == 'logic':
+            self._generate_logic()
+
+    def _generate_input(self):
+        self.state.create_new_variable()
+        self.state.get_input()
+        
+    def _generate_while(self, depth):
+        self.state.get_while_loop()
+        self._generate_logic()
+        self.state.get_open_scope()
+        self._generate_block(depth)
+        self.state.get_close_scope()
+
+    def _generate_if(self, depth):
+        self.state.get_if_statement()
+        self._generate_logic()
+        self.state.get_open_scope()
+        self._generate_block(depth)
+        self.state.get_close_scope()
+
+    def _generate_output(self):
+        self.state.get_output()
+        self.state.get_random_variable()
+
+
+    def _generate_block(self, depth=1):
+        number_of_blocks = random.randint(self.config.min_blocks, self.config.max_blocks)
+        for _ in range(number_of_blocks):
+            block = self.state.get_random_block()
+
+            if block == 'equation':
+                self._generate_equation()
+
+            elif block == 'while':
+                # If max depth is reached, skip while loop
+                # because while loop creates a new block inside of it
+                if depth == self.config.max_blocks_depth:
+                    continue
+                self._generate_while(depth + 1)
+
+            elif block == 'if':
+                # If max depth is reached, skip while loop
+                # because if creates a new block inside of it
+                if depth == self.config.max_blocks_depth:
+                    continue
+                self._generate_if(depth + 1)
+
+            elif block == 'output':
+                self._generate_output()
+
+    # Create random number of variables with random values
     def _generate_initial_variables(self):
         for _ in range(random.randint(self.config.min_inital_vars, self.config.max_initial_vars)):
-            self.state.create_variable_with_initial_value()
+            self.state.get_equation()
+            self.state.create_new_variable()
 
-
-    def _generate_statement(self, depth=0):
-        content = ''
-        
-        if depth > self.config.max_statements_depth:
-            return content
-        
-        number_of_statements = random.randint(self.config.min_number_of_statements, self.config.max_number_of_statements)
-        print('number_of_statements: ', number_of_statements)
-
-        for _ in range(number_of_statements):
             random_number = random.randint(1, 100)
 
-            # Generate variable declaration
-            if random_number < self.config.prob['variable']:
-                variable, init_value = self.state.create_variable_with_initial_value()
-                content += f'int {variable} = {init_value};\n'
-            
-            # Generate while loop
-            elif random_number < self.config.prob['while_loop']:
-                while_loop_syntax = self.state.get_while_loop()
-                condition = self._generate_condition()
-                open_scope_syntax = self.state.get_open_scope()
-                content += f'{while_loop_syntax} ({condition}) {open_scope_syntax}\n'
-                content += self._generate_statement(depth + 1)
-                close_scope_syntax = self.state.get_close_scope()
-                content += f'{close_scope_syntax}\n'
-
-            # Generate operation
-            elif random_number < self.config.prob['operation']:
-                variable = self.state.get_random_variable()
-                expression = self._generate_expression()
-                content += f'{variable} = {expression};\n'
-            
-            # Generate if statement
-            elif random_number < self.config.prob['if_statement']:
-                if_statement_syntax = self.state.get_if_statement()
-                condition = self._generate_condition()
-                open_scope_syntax = self.state.get_open_scope()
-                content += f'{if_statement_syntax} ({condition}) {open_scope_syntax}\n'
-                content += self._generate_statement(depth + 1)
-                close_scope_syntax = self.state.get_close_scope()
-                content += f'{close_scope_syntax}\n'
-        
-        return content
+            if random_number < 50:
+                self.state.get_random_const()
+            else:
+                self.state.get_input()
 
     def generate_population(self):
-        population = []
-        # Generate population of programs
         for _ in range(self.config.population):
             self.state.init_new_indiv_state()
-            self._generate_initial_variables()
-            program = ''
-            
-            for var in self.state.variables[self.state.current_indiv_index]:
-                program += f'int {var} = {self.state.values[self.state.current_indiv_index][var]};\n'
-            
-            
-            content = self._generate_statement()
-            program += content
-
-            population.append(program)
-        return population
-    
+            self._generate_initial_variables()            
+            self._generate_block()
     

@@ -10,30 +10,26 @@ class TinyGPGenerator:
         self.state = state
         self.tree_factory = tree_factory(self.state)
 
-    def _print_config_probabilities(self):
-        prev = 0
-        for key, value in self.config.prob.items():
-            prob = value - prev
-            prev = value
-            print(f'{key}: {prob}')
+    def write_to_file(self):
+        with open('output.txt', 'w') as f:
+            for indiv_stack in self.state.stack:
+                f.write(str(indiv_stack))
+                f.write('\n\n')
 
     def run(self):
-        self._print_config_probabilities()
-        population = self.tree_factory.generate_population()
+        self.config.assert_probabilities()
+        self.tree_factory.generate_population()
 
-        for i, indiv in enumerate(population):
-            # print("\n")
-            # print("INDIVIDUAL: ", i)
-            # print("\n")
-            # print(indiv)
-            # print("\n")
-            print("STACK: ", self.state.stack[i])
+        for i in range(len(self.state.stack)):
+            print("INDIVIDUAL: ", i)
+            print(self.state.stack[i])
 
-        evolution = Evolution(self.state)
-        evolution.evolve()
-        return population
+        # evolution = Evolution(self.state)
+        # evolution.evolve()
+        
+        self.write_to_file()
         
 
 if __name__ == "__main__":
     generator = TinyGPGenerator()
-    population = generator.run()
+    generator.run()
