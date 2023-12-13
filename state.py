@@ -25,32 +25,10 @@ class State:
         self.variables[self.current_indiv_index].append(variable)
         return variable
 
-    def get_random_key(self, obj):
-        random_number = random.randint(1, 100)
-
-        for key, value in obj.items():
-            if random_number <= value:
-                return key
-            random_number -= value
-
-    def get_random_block(self):
-        block = self.get_random_key(self.config.block_prob)
-        return block
-    
-    def get_random_operation_leaf(self):
-        operation = self.get_random_key(self.config.operation_prob)
-        return operation
-        
-    
-    def get_random_equation_type(self):
-        equation_type = self.get_random_key(self.config.equation_prob)
-        return equation_type
-
     
     def generate_random_const(self):
         val = random.randint(self.config.min_const_val, self.config.max_const_val)
         return str(val)
-    
 
 
     # ------------------- GET -------------------

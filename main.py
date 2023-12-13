@@ -24,8 +24,8 @@ class TinyGPGenerator:
             print("INDIVIDUAL: ", i)
             print(self.state.stack[i])
 
-        # evolution = Evolution(self.state)
-        # evolution.evolve()
+        evolution = Evolution(self.state)
+        evolution.evolve()
         
         self.write_to_file()
         

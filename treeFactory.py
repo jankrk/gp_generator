@@ -1,16 +1,17 @@
 import random
 from config import Config
+from utils import Utils
 
-class TreeFactory:
+class TreeFactory(Utils):
     def __init__(self, state, config=Config()):
-        self.config = config
+        super().__init__(config)
         self.state = state
 
 
     def _generate_operation(self, depth=1):
         if depth > self.config.max_operations_depth or random.random() < (1 - self.config.complexity_of_operations):
             
-            operation_leaf = self.state.get_random_operation_leaf()
+            operation_leaf = self.get_random_operation_leaf()
             if operation_leaf == 'variable':
                 self.state.get_random_variable()
             elif operation_leaf == 'constant':
@@ -36,7 +37,7 @@ class TreeFactory:
     
     def _generate_equation(self):
         self.state.get_equation()
-        equation_type = self.state.get_random_equation_type()
+        equation_type = self.get_random_equation_type()
         
         if equation_type == 'input':
             self.state.create_new_variable()
@@ -84,7 +85,7 @@ class TreeFactory:
     def _generate_block(self, depth=1):
         number_of_blocks = random.randint(self.config.min_blocks, self.config.max_blocks)
         for _ in range(number_of_blocks):
-            block = self.state.get_random_block()
+            block = self.get_random_block()
 
             if block == 'equation':
                 self._generate_equation()

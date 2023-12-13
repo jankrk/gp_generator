@@ -4,25 +4,25 @@ class Config:
         self.max_initial_vars = 4
 
         self.min_const_val = 1
-        self.max_const_val = 30
+        self.max_const_val = 100
 
-        self.min_blocks = 1
+        self.min_blocks = 2
         self.max_blocks = 5
 
         self.max_blocks_depth = 3
-        self.max_operations_depth = 3
-        self.max_logic_depth = 3
+        self.max_operations_depth = 2
+        self.max_logic_depth = 2
 
         # between 0 and 1
         # 0 means no complexity
         # 1 means max complexity
-        self.complexity_of_operations = 0.4
-        self.complexity_of_logic = 0
+        self.complexity_of_operations = 0.1
+        self.complexity_of_logic = 0.1
 
         # evolution
         self.max_mutation_depth = 5
 
-        self.population = 1
+        self.population = 3
         self.generations = 5
         self.tournament_size = 1
 

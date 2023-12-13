@@ -1,110 +1,182 @@
 from config import Config
+from utils import Utils
 
+class GpParser(Utils):
+    def __init__(self, data, config=Config()):
+        super().__init__(config)
+        self.data = data
+        self.iterator = 0
+        self.length = len(data)
+        self.result = ''
 
-class GpParser:
-    def __init__(self, config=Config()):
-        self.config = config
-        pass
+    def increment_iterator(self):
+        self.iterator += 1
 
-    def _parse_input(self, data, i):
-        return data[i]
+    def current_token(self):
+        return self.data[self.iterator]
+
+    def next_token(self):
+        self.increment_iterator()
+        return self.current_token()
+
+    def add_to_result(self, parsed_string):
+        self.result += parsed_string
     
-    def _parse_operation(self, data, i):
-        operation = data[i]
-        i += 1
+    def _parse_operation(self):
+        operation_token = self.current_token()
+        token = self.next_token()
 
         left_side = ''
-        if data[i] in self.config.syntax['operations']:
-            left_side, i = self._parse_operation(data, i)
-            i += 1
+        if self.is_operation(token):
+            left_side = self._parse_operation()
         else:
-            left_side = data[i]
-            i += 1
+            left_side = token
         
+        token = self.next_token()
         right_side = ''
-        if data[i] in self.config.syntax['operations']:
-            right_side, i = self._parse_operation(data, i)
-            # i += 1
+        if self.is_operation(token):
+            right_side = self._parse_operation()
         else:
-            right_side = data[i]
+            right_side = token
 
-        res = f"{left_side} {operation} {right_side}"
-        return res, i
-
-
-
-    def _parse_equation(self, data, i):
-        i += 1
-        left_side = data[i]
-        i += 1
-        right_side = ''
-        
-        if data[i] == self.config.syntax['input']:
-            right_side = self._parse_input(data, i)
-        
-        elif data[i].isdigit():
-            right_side = data[i]
-
-        elif data[i] in self.config.syntax['operations']:
-            right_side, i = self._parse_operation(data, i)
-
-        
-        res = f"{left_side} = {right_side};"
-        return res, i
+        parsed = f"({left_side} {operation_token} {right_side})"
+        return parsed
     
-    # def _parse_condition(self, data, i):
-    #     condition = data[i]
-    #     i += 1
+    def _parse_condition(self):
+        condition_token = self.current_token()
+        token = self.next_token()
 
-    #     left_side = ''
-    #     right_side = ''
+        left_side = ''
+        if self.is_operation(token):
+            left_side = self._parse_condition()
+        else:
+            left_side = token
+        
+        token = self.next_token()
+        right_side = ''
+        if self.is_operation(token):
+            right_side = self._parse_condition()
+        else:
+            right_side = token
 
-    #     if data[i] in self.config.syntax['logic']:
-    #         left_side, i = self._parse_logic(data, i)
-    #     elif data[i] in self.config.syntax['conditions']:
-    #         pass
+        parsed = f"({left_side} {condition_token} {right_side})"
+        return parsed
+
+    def _parse_logic(self):
+        logic_token = self.current_token()
+        token = self.next_token()
+
+        left_side = ''
+        if self.is_logic(token):
+            left_side = self._parse_logic()
+        elif self.is_condition(token):
+            left_side = self._parse_condition()
+        else:
+            left_side = token
+
+        right_side = ''
+        token = self.next_token()
+        if self.is_logic(token):
+            right_side = self._parse_logic()
+        elif self.is_condition(token):
+            right_side = self._parse_condition()
+        else:
+            right_side = token
+
+        parsed = f"({left_side} {logic_token} {right_side})"
+        return parsed
+
+    def _parse_equation(self):
+        left_side = self.next_token()
+        token = self.next_token()
+        right_side = ''
+        
+        if self.is_input(token) or token.isdigit():
+            right_side = token
+
+        elif self.is_operation(token):
+            right_side = self._parse_operation()
+
+        elif self.is_logic(token):
+            right_side = self._parse_logic()
+
+        elif self.is_condition(token):
+            right_side = self._parse_condition()
+
+        else:
+            right_side = token
+        
+        parsed = f"{left_side} = {right_side};"
+        return parsed
+        
+
+    def _parse_output(self): 
+        output_token = self.current_token()
+        variable_token = self.next_token()
+        parsed = f"{output_token} {variable_token};"
+        return parsed
+    
+    def _parse_if(self):
+        if_token = self.current_token()
+        token = self.next_token()
+        condition = ''
+
+        if self.is_logic(token):
+            condition = self._parse_logic()
+        elif self.is_condition(token):
+            condition = self._parse_condition()
+        else:
+            condition = token
+
+        parsed = f"{if_token} ({condition})"
+        return parsed
+    
+    def _parse_while(self):
+        while_token = self.current_token()
+        token = self.next_token()
+        condition = ''
+
+        if self.is_logic(token):
+            condition = self._parse_logic()
+        elif self.is_condition(token):
+            condition = self._parse_condition()
+        else:
+            condition = token
+
+        parsed = f"{while_token} ({condition})"
+        return parsed
+
+    def parse(self):
+        while self.iterator < self.length:
+            token = self.current_token()
+            parsed = ''
+
+            if self.is_equation(token):
+                parsed = self._parse_equation()
+            elif self.is_output(token):
+                parsed = self._parse_output()
+            elif self.is_logic(token):
+                parsed = self._parse_logic()
+            elif self.is_if(token):
+                parsed = self._parse_if()
+            elif self.is_while(token):
+                parsed = self._parse_while()
+            elif self.is_open_scope(token):
+                parsed = token
+            elif self.is_close_scope(token):
+                parsed = token
             
-    # def _parse_logic(self, data, i):
-    #     logic_expression = data[i]
-    #     i += 1
+            self.add_to_result(parsed)
+            self.increment_iterator()
 
-    #     left_side = ''
-    #     right_side = ''
-
-    #     if data[i] in self.config.syntax['logic']:
-    #         left_side, i = self._parse_logic(data, i)
-    #     elif data[i] in self.config.syntax['conditions']:
-    #         pass 
-
-    def _parse_output(self, data, i): 
-        output = data[i]
-        i += 1
-        variable = data[i]
-        res = f"{output} {variable};"
-        return res, i
-
-    def parse(self, data):
-        content = ''
-        i = 0
-        while i < len(data):
-            if data[i] == self.config.syntax['equation']:
-                res, i = self._parse_equation(data, i)
-                print(res + '\n')
-                content += res
-            elif data[i] == self.config.syntax['output']:
-                res, i = self._parse_output(data, i)
-                print(res + '\n')
-                content += res
-            elif data[i] in self.config.syntax['logic']:
-                print(f"LOGIC: {data[i]}")
-                content += data[i]
-
-            i += 1
-
-        return content
+        return self.result
 
 
-data = ['=', 'var0', 'input', '=', 'var1', '16', '=', 'var2', 'input', '=', 'var4', '+', '-', '1', '*', '5', '2', '3', '=', 'var0', 'input']
-gpParser = GpParser()
-res = gpParser.parse(data)
+# read from output.txt
+with open('output.txt', 'r') as f:
+    data = f.read()
+
+data = [elem.strip().replace("'", "") for elem in data[1:-1].split(',')]
+gpParser = GpParser(data)
+res = gpParser.parse()
 print("RES: ", res)
