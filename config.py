@@ -19,9 +19,6 @@ class Config:
         self.complexity_of_operations = 0.1
         self.complexity_of_logic = 0.1
 
-        # evolution
-        self.max_mutation_depth = 5
-
         self.population = 3
         self.generations = 5
         self.tournament_size = 1
@@ -30,6 +27,9 @@ class Config:
             'crossover': 20,
             'mutation': 80
         }
+
+        # max 100
+        self.mut_prob_per_node = 10
         
         self.block_prob = {
             'equation': 25,

@@ -7,8 +7,9 @@ class State:
         self.variables = []
         self.stack = []
         self.config = config
+        self.fitness = []
 
-
+    
     def init_new_indiv_state(self):
         if self.current_indiv_index == None:
             self.current_indiv_index = 0
@@ -17,6 +18,7 @@ class State:
         
         self.variables.append([])
         self.stack.append([])
+        self.fitness.append(0)
     
     def create_new_variable(self):
         var_prefix = self.get_var_prefix()
@@ -29,9 +31,18 @@ class State:
     def generate_random_const(self):
         val = random.randint(self.config.min_const_val, self.config.max_const_val)
         return str(val)
+    
+    def set_cur_indiv_fitness(self, fitness):
+        self.fitness[self.current_indiv_index] = fitness
 
+    def replace_indiv(self, offspring_index, new_indiv, new_fitness):
+        self.stack[offspring_index] = new_indiv
+        self.fitness[offspring_index] = new_fitness
 
     # ------------------- GET -------------------
+
+    def get_fitness(self, i):
+        return self.fitness[i]
 
     def get_random_const(self):
         val = self.generate_random_const()

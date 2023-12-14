@@ -86,3 +86,7 @@ class Utils:
     def get_random_evolution_type(self):
         evolution_type = self.get_random_key(self.config.evolution_prob)
         return evolution_type
+    
+    def fitnessFunction(self, indiv):
+        random = random.randint(1, 100)
+        return random

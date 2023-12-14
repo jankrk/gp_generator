@@ -120,9 +120,12 @@ class TreeFactory(Utils):
             else:
                 self.state.get_input()
 
+
     def generate_population(self):
-        for _ in range(self.config.population):
+        for i in range(self.config.population):
             self.state.init_new_indiv_state()
             self._generate_initial_variables()            
             self._generate_block()
+            fitness = self.fitnessFunction(self.state.get_indiv_stack())
+            self.state.set_cur_indiv_fitness(fitness)
     
