@@ -20,10 +20,6 @@ class TinyGPGenerator:
         self.config.assert_probabilities()
         self.tree_factory.generate_population()
 
-        for i in range(len(self.state.stack)):
-            print("INDIVIDUAL: ", i)
-            print(self.state.stack[i])
-
         evolution = Evolution(self.state)
         evolution.evolve()
         

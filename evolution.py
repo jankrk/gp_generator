@@ -1,8 +1,9 @@
 import random
 from config import Config
 from utils import Utils
+from fitness import Fitness
 
-class Evolution(Utils):
+class Evolution(Utils, Fitness):
     def __init__(self, state, config=Config()):
         super().__init__(config)
         self.state = state
@@ -32,44 +33,44 @@ class Evolution(Utils):
                 # Replace operation
                 random_operation = self.choose_random_operation(token)
                 parent_stack_copy[i] = random_operation
-                print(f"Mutated operation to from {token} to {random_operation} at index {i}")
+                # print(f"Mutated operation to from {token} to {random_operation} at index {i}")
 
             elif self.is_condition(token):
                 # Replace condition
                 random_condition = self.choose_random_condition(token)
                 parent_stack_copy[i] = random_condition
-                print(f"Mutated condition to from {token} to {random_condition} at index {i}")
+                # print(f"Mutated condition to from {token} to {random_condition} at index {i}")
                 
             
             elif self.is_if(token):
                 # Replace if statement to while loop
                 parent_stack_copy[i] = self.config.syntax['while']
-                print(f"Mutated if statement to while loop at index {i}")
+                # print(f"Mutated if statement to while loop at index {i}")
                 
             
             elif self.is_while(token):
                 # Replace while loop to if statement
                 parent_stack_copy[i] = self.config.syntax['if']
-                print(f"Mutated while loop to if statement at index {i}")
+                # print(f"Mutated while loop to if statement at index {i}")
                 
             elif self.is_logic(token):
                 # Replace logic
                 random_logic = self.choose_random_logic(token)
                 parent_stack_copy[i] = random_logic
-                print(f"Mutated logic from {token} to {random_logic} at index {i}")
+                # print(f"Mutated logic from {token} to {random_logic} at index {i}")
 
             elif self.is_constant(token):
                 # Replace constant
                 random_const = self.choose_random_const()
                 parent_stack_copy[i] = random_const
-                print(f"Mutated constant from {token} to {random_const} at index {i}")
+                # print(f"Mutated constant from {token} to {random_const} at index {i}")
 
             elif self.is_variable(token):
                 # Replace variable
                 random_var_index = random.randint(0, len(self.state.variables[parent_index]) - 1)
                 random_variable = self.state.variables[parent_index][random_var_index]
                 parent_stack_copy[i] = random_variable
-                print(f"Mutated variable from {token} to {random_variable} at index {i}")
+                # print(f"Mutated variable from {token} to {random_variable} at index {i}")
 
 
         return parent_stack_copy
@@ -105,12 +106,12 @@ class Evolution(Utils):
 
     def evolve(self):
         for g in range(self.config.generations):
-            print(f"Generation {g}")
+            # print(f"Generation {g}")
             for i in range(self.config.population):
                 evolution_type = self.get_random_evolution_type()
 
                 if evolution_type == 'crossover':
-                    print(f"Individual {i} will be crossed over")
+                    # print(f"Individual {i} will be crossed over")
                     # TODO: What if parents are the same?
                     parent1_index = self._tournament()
                     parent2_index = self._tournament()
@@ -121,8 +122,6 @@ class Evolution(Utils):
                     # TODO: Change varriable generation to be static 
                     indiv_index = self._tournament()
                     new_indiv = self._mutation(indiv_index)
-                    print("After mutation: ")
-                    print(new_indiv)
 
                 new_fitness = self.fitness_function(new_indiv)
 

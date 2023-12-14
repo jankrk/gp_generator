@@ -1,8 +1,9 @@
 import random
 from config import Config
 from utils import Utils
+from fitness import Fitness
 
-class TreeFactory(Utils):
+class TreeFactory(Utils, Fitness):
     def __init__(self, state, config=Config()):
         super().__init__(config)
         self.state = state

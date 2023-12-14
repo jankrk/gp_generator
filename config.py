@@ -19,9 +19,9 @@ class Config:
         self.complexity_of_operations = 0.1
         self.complexity_of_logic = 0.1
 
-        self.population = 1
-        self.generations = 5
-        self.tournament_size = 1
+        self.population = 5
+        self.generations = 1
+        self.tournament_size = 3
 
         self.evolution_prob = {
             'crossover': 20,
@@ -62,6 +62,8 @@ class Config:
             'variable_prefix': 'var',
             'input': 'input',
             'output': 'output'
+
+            # TODO: add "not", "false", "true"
         }
 
     def assert_probabilities(self):

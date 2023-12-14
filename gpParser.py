@@ -173,10 +173,10 @@ class GpParser(Utils):
 
 
 # read from output.txt
-with open('output.txt', 'r') as f:
-    data = f.read()
+# with open('output.txt', 'r') as f:
+#     data = f.read()
 
-data = [elem.strip().replace("'", "") for elem in data[1:-1].split(',')]
-gpParser = GpParser(data)
-res = gpParser.parse()
-print("RES: ", res)
+# data = [elem.strip().replace("'", "") for elem in data.strip()[1:-1].split(',')]
+# gpParser = GpParser(data)
+# res = gpParser.parse()
+# print("RES: ", res)

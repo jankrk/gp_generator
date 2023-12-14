@@ -56,7 +56,6 @@ class State:
     
     def get_while_loop(self):
         while_syntax = self.config.syntax['while']
-        print("SAVEIONN G WHILE LOOP")
         self._save_while_loop(while_syntax)
         return while_syntax
     
