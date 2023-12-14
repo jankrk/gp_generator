@@ -3,7 +3,7 @@ class Config:
         self.min_inital_vars = 1
         self.max_initial_vars = 4
 
-        self.min_const_val = 1
+        self.min_const_val = -100
         self.max_const_val = 100
 
         self.min_blocks = 2
@@ -19,8 +19,8 @@ class Config:
         self.complexity_of_operations = 0.1
         self.complexity_of_logic = 0.1
 
-        self.population = 5
-        self.generations = 1
+        self.population = 100000
+        self.generations = 0
         self.tournament_size = 3
 
         self.evolution_prob = {
