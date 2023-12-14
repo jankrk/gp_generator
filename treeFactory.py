@@ -126,6 +126,6 @@ class TreeFactory(Utils):
             self.state.init_new_indiv_state()
             self._generate_initial_variables()            
             self._generate_block()
-            fitness = self.fitnessFunction(self.state.get_indiv_stack())
+            fitness = self.fitness_function(self.state.get_indiv_stack(i))
             self.state.set_cur_indiv_fitness(fitness)
     

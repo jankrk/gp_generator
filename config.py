@@ -19,7 +19,7 @@ class Config:
         self.complexity_of_operations = 0.1
         self.complexity_of_logic = 0.1
 
-        self.population = 3
+        self.population = 1
         self.generations = 5
         self.tournament_size = 1
 

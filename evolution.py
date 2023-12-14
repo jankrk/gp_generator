@@ -12,9 +12,9 @@ class Evolution(Utils):
         parent_stack_length = len(parent_stack_copy)
         
         for i in range(parent_stack_length):
-            random = random.randint(0, 100)
+            random_number = random.randint(0, 100)
 
-            if random > self.config.mut_prob_per_node:
+            if random_number > self.config.mut_prob_per_node:
                 continue
 
             token = parent_stack_copy[i]
@@ -66,8 +66,8 @@ class Evolution(Utils):
 
             elif self.is_variable(token):
                 # Replace variable
-                random_var_index = random.randint(0, len(self.state.variables[indiv_index]) - 1)
-                random_variable = self.state.variables[i][random_var_index]
+                random_var_index = random.randint(0, len(self.state.variables[parent_index]) - 1)
+                random_variable = self.state.variables[parent_index][random_var_index]
                 parent_stack_copy[i] = random_variable
                 print(f"Mutated variable from {token} to {random_variable} at index {i}")
 
@@ -114,6 +114,7 @@ class Evolution(Utils):
                     # TODO: What if parents are the same?
                     parent1_index = self._tournament()
                     parent2_index = self._tournament()
+                    continue
                     pass
 
                 elif evolution_type == 'mutation':
@@ -123,7 +124,7 @@ class Evolution(Utils):
                     print("After mutation: ")
                     print(new_indiv)
 
-                new_fitness = self.fitnessFunction(new_indiv)
+                new_fitness = self.fitness_function(new_indiv)
 
                 # Get worst individual and replace it with new individual
                 offspring_index = self.negative_tournament()

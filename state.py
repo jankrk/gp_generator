@@ -109,10 +109,13 @@ class State:
         self._save_equation(equation_syntax)
         return equation_syntax
 
+    def get_indiv_stack(self, i):
+        return self.stack[i]
 
 
     def _get_current_stack(self):
         return self.stack[self.current_indiv_index]
+    
 
 
     # ------------------- SAVE -------------------
