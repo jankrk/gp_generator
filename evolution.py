@@ -103,6 +103,13 @@ class Evolution(Utils, Fitness):
                 worst_indiv_index = random_indiv_index
         
         return worst_indiv_index
+    
+    def stats(self):
+        fitness_avg = sum(self.state.fitness) / len(self.state.fitness)
+        best_fitness = max(self.state.fitness)
+        best_indiv_index = self.state.fitness.index(best_fitness)
+        best_indiv = self.state.stack[best_indiv_index]
+        print(f"Generation {g} fitness avg: {fitness_avg}")
 
     def evolve(self):
         for g in range(self.config.generations):
@@ -119,7 +126,6 @@ class Evolution(Utils, Fitness):
                     pass
 
                 elif evolution_type == 'mutation':
-                    # TODO: Change varriable generation to be static 
                     indiv_index = self._tournament()
                     new_indiv = self._mutation(indiv_index)
 
@@ -128,7 +134,8 @@ class Evolution(Utils, Fitness):
                 # Get worst individual and replace it with new individual
                 offspring_index = self.negative_tournament()
                 self.state.replace_indiv(offspring_index, new_indiv, new_fitness)
-
+            self.stats()
+            
 
                 
 

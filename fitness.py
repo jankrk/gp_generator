@@ -10,5 +10,5 @@ class Fitness():
         # TODO run interpreter and heuristic
 
 
-        # print(result + "\n\n")
+        print(result + "\n\n")
         return random_number

@@ -107,6 +107,21 @@ class State:
         equation_syntax = self.config.syntax['equation']
         self._save_equation(equation_syntax)
         return equation_syntax
+    
+    def get_true(self):
+        true_syntax = self.config.syntax['true']
+        self._save_true(true_syntax)
+        return true_syntax
+    
+    def get_false(self):
+        false_syntax = self.config.syntax['false']
+        self._save_false(false_syntax)
+        return false_syntax
+    
+    def get_not(self):
+        not_syntax = self.config.syntax['not']
+        self._save_not(not_syntax)
+        return not_syntax
 
     def get_indiv_stack(self, i):
         return self.stack[i]
@@ -166,3 +181,15 @@ class State:
     def _save_logic(self, logic):
         stack = self._get_current_stack()
         stack.append(logic)
+
+    def _save_true(self, true_syntax):
+        stack = self._get_current_stack()
+        stack.append(true_syntax)
+    
+    def _save_false(self, false_syntax):
+        stack = self._get_current_stack()
+        stack.append(false_syntax)
+
+    def _save_not(self, not_syntax):
+        stack = self._get_current_stack()
+        stack.append(not_syntax)

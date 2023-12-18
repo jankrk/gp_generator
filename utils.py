@@ -40,6 +40,15 @@ class Utils:
     def is_constant(self, token):
         return str(token).isdigit()
     
+    def is_not(self, token):
+        return token == self.config.syntax['not']
+    
+    def is_true(self, token):
+        return token == self.config.syntax['true']
+    
+    def is_false(self, token):
+        return token == self.config.syntax['false']
+    
     def choose_random_operation(self, exclude=None):
         operations = self.config.syntax['operations'][:]
         if exclude:
@@ -86,3 +95,10 @@ class Utils:
     def get_random_evolution_type(self):
         evolution_type = self.get_random_key(self.config.evolution_prob)
         return evolution_type
+    
+    def get_random_condition_leaf(self):
+        condition = self.get_random_key(self.config.condition_prob)
+        return condition
+    
+    def add_not(self):
+        return random.randint(1, 100) <= self.config.not_prob

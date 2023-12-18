@@ -9,20 +9,21 @@ class Config:
         self.min_blocks = 2
         self.max_blocks = 5
 
-        self.max_blocks_depth = 3
-        self.max_operations_depth = 2
-        self.max_logic_depth = 2
+        self.max_blocks_depth = 2
+        self.max_operations_depth = 4
+        self.max_logic_depth = 4
 
         # between 0 and 1
         # 0 means no complexity
         # 1 means max complexity
-        self.complexity_of_operations = 0.1
-        self.complexity_of_logic = 0.1
+        self.complexity_of_operations = 0.3
+        self.complexity_of_logic = 0.3
 
-        self.population = 100000
+        self.population = 1
         self.generations = 0
         self.tournament_size = 3
 
+        self.not_prob = 30
         self.evolution_prob = {
             'crossover': 20,
             'mutation': 80
@@ -40,8 +41,16 @@ class Config:
 
         # Use more vars or consts?
         self.operation_prob = {
-            'variable': 50,
-            'constant': 50,
+            'variable': 45,
+            'constant': 45,
+            'input': 10,
+        }
+
+        self.condition_prob = {
+            'operation': 20,
+            'true': 40,
+            'false': 40,
+            'input': 0,
         }
 
         self.equation_prob = {
@@ -56,14 +65,21 @@ class Config:
             'open_scope': '{',
             'close_scope': '}',
             'equation': '=',
-            'operations': ['+', '-', '*', '/'],
+            'operations': ['+', '-', '*', '//'],
             'conditions': ['<', '>', '==', '!=', '>=', '<='],
-            'logic': ['and', 'or'],
+            'logic': ['and', 'or', '^'],
+            'not': 'not',
             'variable_prefix': 'var',
             'input': 'input',
-            'output': 'output'
+            'output': 'output',
+            'true': 'true',
+            'false': 'false',
 
             # TODO: add "not", "false", "true"
+
+            # TODO: Fix empty blocks
+
+            
         }
 
     def assert_probabilities(self):
@@ -71,3 +87,4 @@ class Config:
         assert sum(self.operation_prob.values()) == 100, "Expression probabilities should sum up to 100"
         assert sum(self.evolution_prob.values()) == 100, "Evolution probabilities should sum up to 100"
         assert sum(self.equation_prob.values()) == 100, "Equation probabilities should sum up to 100"
+        assert sum(self.condition_prob.values()) == 100, "Condition probabilities should sum up to 100"

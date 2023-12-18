@@ -8,8 +8,11 @@ class TreeFactory(Utils, Fitness):
         super().__init__(config)
         self.state = state
 
+    def denial_expression_with_probability(self):
+        if self.add_not():
+            self.state.get_not()
 
-    def _generate_operation(self, depth=1):
+    def _generate_operation(self, depth=1):            
         if depth > self.config.max_operations_depth or random.random() < (1 - self.config.complexity_of_operations):
             
             operation_leaf = self.get_random_operation_leaf()
@@ -17,6 +20,8 @@ class TreeFactory(Utils, Fitness):
                 self.state.get_random_variable()
             elif operation_leaf == 'constant':
                 self.state.get_random_const()
+            elif operation_leaf == 'input':
+                self.state.get_input()
         else: 
             # Choose an arithmetic expression
             self.state.get_random_operation()
@@ -24,14 +29,32 @@ class TreeFactory(Utils, Fitness):
             self._generate_operation(depth + 1)
 
     def _generate_condition(self):
+        self.denial_expression_with_probability()
         self.state.get_random_condition()
-        self._generate_operation()
-        self._generate_operation()
+
+        left_condition_leaf = self.get_random_condition_leaf()
+        right_condition_leaf = self.get_random_condition_leaf()
+        children = [left_condition_leaf, right_condition_leaf]
+
+        for child in children:
+            self.denial_expression_with_probability()
+            if child == 'operation':
+                self._generate_operation()
+            elif child == 'true':
+                self.state.get_true()
+            elif child == 'false':
+                self.state.get_false()
+            elif child == 'input':
+                self.state.get_input()
+            else:
+                raise Exception('Unknown condition leaf')
+
     
     def _generate_logic(self, depth=1):
         if depth > self.config.max_logic_depth or random.random() < (1 - self.config.complexity_of_logic):
             self._generate_condition()
         else:
+            self.denial_expression_with_probability()
             self.state.get_random_logic()
             self._generate_logic(depth + 1)
             self._generate_logic(depth + 1)
