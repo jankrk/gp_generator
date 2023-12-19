@@ -4,7 +4,7 @@ class Config:
         self.data = 'data.txt'
         self.heuristic = '1.1.B'
 
-        self.max_interpreter_steps = 100
+        self.max_interpreter_steps = 1000
 
         self.min_inital_vars = 1
         self.max_initial_vars = 4
@@ -16,8 +16,8 @@ class Config:
         self.max_blocks = 5
 
         self.max_blocks_depth = 2
-        self.max_operations_depth = 3
-        self.max_logic_depth = 3
+        self.max_operations_depth = 2
+        self.max_logic_depth = 2
 
         # between 0 and 1
         # 0 means no complexity
@@ -27,7 +27,7 @@ class Config:
 
         self.population = 50
         self.generations = 100
-        self.tournament_size = 20
+        self.tournament_size = 40
 
         self.not_prob = 30
         self.evolution_prob = {

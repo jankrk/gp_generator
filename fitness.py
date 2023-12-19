@@ -40,7 +40,9 @@ class Fitness():
         tree = parser.program()
         for i in range(len(self.input)):
             visitor = MyGPMiniVisitor(self.config.max_interpreter_steps, self.input[i])
-            output_generated = visitor.visitProgram(tree)
+            tab = visitor.visitProgram(tree)
+            output_generated = tab[0]
+            fitness += tab[1] - self.config.max_interpreter_steps
             if 'ERROR' in output_generated:
                 fitness -= math.inf
             else:

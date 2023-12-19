@@ -22,9 +22,9 @@ class MyGPMiniVisitor(GPMiniVisitor):
     def visitProgram(self, ctx:GPMiniParser.ProgramContext):
         for s in ctx.statement():
             if self.counter == 0:
-                return self.output
+                return [self.output, self.counter]
             self.visitStatement(s)
-        return self.output
+        return [self.output, self.counter]
 
 
     # Visit a parse tree produced by GPMiniParser#statement.

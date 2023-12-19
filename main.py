@@ -8,7 +8,7 @@ from heuristic import Heuristic
 import timeit
 
 class TinyGPGenerator:
-    def __init__(self, tree_factory=TreeFactory):
+    def __init__(self):
         self.config = Config()
         self.state = State(self.config)
         self.heuristic = Heuristic()
