@@ -1,12 +1,11 @@
 import random 
-from config import Config
 
 class State:
-    def __init__(self, config=Config()):
+    def __init__(self, config):
+        self.config = config
         self.current_indiv_index = None
         self.variables = []
         self.stack = []
-        self.config = config
         self.fitness = []
 
     
