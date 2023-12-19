@@ -1,12 +1,11 @@
 import random
-from config import Config
 from utils import Utils
-from fitness import Fitness
 
-class TreeFactory(Utils, Fitness):
-    def __init__(self, state, config=Config()):
-        super().__init__(config)
+class TreeFactory(Utils):
+    def __init__(self, state, fitness, config):
         self.state = state
+        self.fitness = fitness
+        self.config = config
 
     def denial_expression_with_probability(self):
         if self.add_not():
@@ -150,6 +149,6 @@ class TreeFactory(Utils, Fitness):
             self.state.init_new_indiv_state()
             self._generate_initial_variables()            
             self._generate_block()
-            fitness = self.fitness_function(self.state.get_indiv_stack(i))
+            fitness = self.fitness.fitness_function(self.state.get_indiv_stack(i))
             self.state.set_cur_indiv_fitness(fitness)
     

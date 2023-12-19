@@ -3,19 +3,18 @@ from config import Config
 from state import State
 from treeFactory import TreeFactory
 from evolution import Evolution
+from fitness import Fitness
+from heuristic import Heuristic
 import timeit
 
 class TinyGPGenerator:
-    def __init__(self, config=Config(), state=State(), tree_factory=TreeFactory):
-        self.config = config
-        self.state = state
-        self.tree_factory = tree_factory(self.state)
-
-    def write_to_file(self):
-        with open('output.txt', 'w') as f:
-            for indiv_stack in self.state.stack:
-                f.write(str(indiv_stack))
-                f.write('\n\n')
+    def __init__(self):
+        self.config = Config()
+        self.state = State(self.config)
+        self.heuristic = Heuristic()
+        self.fitness = Fitness(self.heuristic, self.config)
+        self.tree_factory = TreeFactory(self.state, self.fitness, self.config)
+        self.evolution = Evolution(self.state, self.fitness, self.config)
 
     def run(self):
         self.config.assert_probabilities()
@@ -26,10 +25,14 @@ class TinyGPGenerator:
         end_time = timeit.default_timer()
         print(f"Time to generate population: {end_time - start_time}")
 
-        evolution = Evolution(self.state)
-        evolution.evolve()
+        v = self.evolution.evolve()
         
-        self.write_to_file()
+        self.end(v)
+    
+    def end(self, v):
+        print('PROBLEM NOT SOLVED') if v != 1 else print('PROBLEM SOLVED')
+        print('END')
+        pass
         
 
 if __name__ == "__main__":

@@ -1,13 +1,13 @@
 import random
-from config import Config
 from utils import Utils
-from fitness import Fitness
+from gpParser import GpParser
 
-class Evolution(Utils, Fitness):
-    def __init__(self, state, config=Config()):
-        super().__init__(config)
+class Evolution(Utils):
+    def __init__(self, state, fitness, config):
         self.state = state
-        
+        self.fitness = fitness
+        self.config = config
+
     def _mutation(self, parent_index):
         parent_stack_copy = self.state.stack[parent_index][:]
         parent_stack_length = len(parent_stack_copy)
@@ -104,15 +104,29 @@ class Evolution(Utils, Fitness):
         
         return worst_indiv_index
     
-    def stats(self):
-        fitness_avg = sum(self.state.fitness) / len(self.state.fitness)
+    def stats(self, g):
+        fitness_avg = -sum(self.state.fitness) / len(self.state.fitness)
         best_fitness = max(self.state.fitness)
         best_indiv_index = self.state.fitness.index(best_fitness)
         best_indiv = self.state.stack[best_indiv_index]
-        print(f"Generation {g} fitness avg: {fitness_avg}")
+        gpParser = GpParser(best_indiv)
+        indiv = gpParser.parse()
+        print(f"Generation: {g} \nAvg_fitness: {fitness_avg} \nBest_fitness: {-best_fitness} \nBest_individual: {indiv}\n")
 
+    def problem_solved(self):
+        best_indiv_index = self.state.fitness.index(0)
+        best_indiv = self.state.stack[best_indiv_index]
+        gpParser = GpParser(best_indiv)
+        indiv = gpParser.parse()
+        print(f"\n\n\nFound solution: {indiv}\n\n")
+        return 1 
+    
     def evolve(self):
         for g in range(self.config.generations):
+            self.stats(g)
+            if max(self.state.fitness) == 0:
+                    return self.problem_solved()
+                    
             # print(f"Generation {g}")
             for i in range(self.config.population):
                 evolution_type = self.get_random_evolution_type()
@@ -129,12 +143,13 @@ class Evolution(Utils, Fitness):
                     indiv_index = self._tournament()
                     new_indiv = self._mutation(indiv_index)
 
-                new_fitness = self.fitness_function(new_indiv)
+                new_fitness = self.fitness.fitness_function(new_indiv)
 
                 # Get worst individual and replace it with new individual
                 offspring_index = self.negative_tournament()
                 self.state.replace_indiv(offspring_index, new_indiv, new_fitness)
-            self.stats()
+                
+                
             
 
                 
