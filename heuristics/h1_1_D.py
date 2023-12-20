@@ -1,3 +1,4 @@
+import math
 '''
     1.1.D
     Program powinien wygenerować 
@@ -8,5 +9,5 @@
 def h_1_1_D(input, output, output_generated):
     rate = 0
     if output_generated[0] != 1:
-        rate -= 100
+        rate -= math.abs(1 - output_generated[0])
     return rate

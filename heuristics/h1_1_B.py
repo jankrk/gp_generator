@@ -1,3 +1,4 @@
+import math
 '''
     1.1.B 
     Program powinien wygenerować na wyjściu 
@@ -7,7 +8,9 @@
 '''
 
 def h_1_1_B(input, output, output_generated):
-    rate = 0
+    tab = [0]
     if 789 not in output_generated:
-        rate -= 100
-    return rate
+        tab = []
+        for i in range(len(output_generated)):
+            tab.append(math.abs(789 - output_generated[i]))
+    return -min(tab)

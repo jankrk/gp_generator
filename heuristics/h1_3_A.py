@@ -8,4 +8,9 @@
 '''
 
 def h_1_3_A(input, output, output_generated):
-    return 0
+    rate = 0
+    if len(output_generated) != 1:
+        rate -= 100000
+    if output_generated[0] != max(input[0], input[1]):
+        rate -= 100
+    return rate
