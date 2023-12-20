@@ -45,6 +45,8 @@ class Fitness():
             fitness += tab[1] - self.config.max_interpreter_steps
             if 'ERROR' in output_generated:
                 fitness -= math.inf
+            elif output_generated == []:
+                fitness -= math.inf
             else:
                 fitness += self.heuristic.rate(self.config.heuristic, self.input[i], self.output[i], output_generated)
             # print(f"output_generated = {output_generated} \nfitness = {fitness}\n")

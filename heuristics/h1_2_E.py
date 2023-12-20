@@ -1,4 +1,3 @@
-import math
 '''
     1.2.E 
     Program powinien odczytać 
@@ -13,5 +12,5 @@ def h_1_2_E(input, output, output_generated):
     if len(output_generated) != 1:
         rate -= 100000
     if output_generated[0] != input[0] * input[1]:
-        rate -= math.abs(output_generated[0] - (input[0] * input[1]))
+        rate -= abs(output_generated[0] - (input[0] * input[1]))
     return rate

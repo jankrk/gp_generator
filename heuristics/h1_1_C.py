@@ -1,4 +1,3 @@
-import math
 '''
     1.1.C 
     Program powinien wygenerować na wyjściu 
@@ -12,5 +11,6 @@ def h_1_1_C(input, output, output_generated):
     if 31415 not in output_generated:
         tab = []
         for i in range(len(output_generated)):
-            tab.append(math.abs(31415 - output_generated[i]))
-    return -min(tab)
+            tab.append(abs(31415 - output_generated[i]))
+        return -1 * min(tab)
+    
